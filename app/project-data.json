@@ -1,0 +1,52 @@
+{
+  "projects": [
+    {
+      "name": "Website Redesign",
+      "owner": "Aisha Kumar",
+      "status": "on-track",
+      "recentActivity": "UI review completed",
+      "priority": "high",
+      "progress": 72
+    },
+    {
+      "name": "Mobile App — Payments",
+      "owner": "Liam Chen",
+      "status": "at-risk",
+      "recentActivity": "API integration delayed",
+      "priority": "medium",
+      "progress": 45
+    },
+    {
+      "name": "Cloud Migration Q3",
+      "owner": "Sofia Martinez",
+      "status": "on-track",
+      "recentActivity": "Staging environment configured",
+      "priority": "high",
+      "progress": 58
+    },
+    {
+      "name": "Marketing Campaign — Summer",
+      "owner": "Jonas Müller",
+      "status": "off-track",
+      "recentActivity": "Creative assets behind schedule",
+      "priority": "low",
+      "progress": 20
+    },
+    {
+      "name": "Customer Onboarding Flow",
+      "owner": "Priya Singh",
+      "status": "at-risk",
+      "recentActivity": "User testing flagged issues",
+      "priority": "medium",
+      "progress": 34
+    },
+    {
+      "name": "Analytics Dashboard Revamp",
+      "owner": "Noah Davis",
+      "status": "on-track",
+      "recentActivity": "Data model finalized",
+      "priority": "low",
+      "progress": 80
+    }
+  ]
+}

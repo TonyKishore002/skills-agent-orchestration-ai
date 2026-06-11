@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Project Pulse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dashboard">
+  <div class="container">
+    <header style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h1 style="margin:0;font-size:20px;">Project Pulse</h1>
+      <div class="kpi-strip" aria-hidden="true">
+        <div class="kpi"><div class="value">6</div><div class="label">Projects</div></div>
+        <div class="kpi"><div class="value">3</div><div class="label">At Risk</div></div>
+        <div class="kpi"><div class="value">2</div><div class="label">Off Track</div></div>
+      </div>
+    </header>
+
+    <main>
+      <div class="project-list" id="projectList" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <script>
+    // Minimal client-side renderer: fetch project-data.json and render project cards
+    (function(){
+      function humanStatus(status){
+        if(status === 'on-track') return 'On track';
+        if(status === 'at-risk') return 'At risk';
+        if(status === 'off-track') return 'Off track';
+        return status;
+      }
+
+      function humanPriority(p){
+        if(p === 'high') return 'High';
+        if(p === 'medium') return 'Medium';
+        if(p === 'low') return 'Low';
+        return p;
+      }
+
+      function createCard(project, idx){
+        var card = document.createElement('article');
+        card.className = 'project-card';
+        card.setAttribute('data-project-id', String(idx));
+        card.setAttribute('data-priority', project.priority || 'low');
+        card.setAttribute('tabindex', '0');
+
+        // Header
+        var header = document.createElement('div'); header.className = 'header';
+        var name = document.createElement('h2'); name.className = 'project-name'; name.textContent = project.name || 'Untitled';
+        name.title = project.name || '';
+        header.appendChild(name);
+
+        var status = document.createElement('div'); status.className = 'status-badge';
+        status.setAttribute('data-status', project.status || 'on-track');
+        var statusText = document.createElement('span'); statusText.className = 'status-text';
+        statusText.textContent = humanStatus(project.status);
+        status.appendChild(statusText);
+        header.appendChild(status);
+
+        card.appendChild(header);
+
+        // Owner / meta
+        var ownerRow = document.createElement('div'); ownerRow.className = 'project-owner';
+        var avatar = document.createElement('div'); avatar.className = 'avatar';
+        avatar.textContent = (project.owner || 'U').split(' ').map(function(n){return n[0];}).slice(0,2).join('');
+        ownerRow.appendChild(avatar);
+        var ownerName = document.createElement('div'); ownerName.textContent = project.owner || '';
+        ownerRow.appendChild(ownerName);
+        card.appendChild(ownerRow);
+
+        // Priority pill
+        var pri = document.createElement('div'); pri.className = 'project-priority';
+        pri.setAttribute('data-priority', project.priority || 'low');
+        pri.textContent = humanPriority(project.priority);
+        card.appendChild(pri);
+
+        // Separator
+        var sep = document.createElement('div'); sep.className = 'separator'; card.appendChild(sep);
+
+        // Recent activity + actions
+        var recent = document.createElement('div'); recent.className = 'project-recent';
+        var notes = document.createElement('div'); notes.className = 'notes'; notes.textContent = project.recentActivity || '';
+        notes.title = project.recentActivity || '';
+        recent.appendChild(notes);
+
+        var actions = document.createElement('div'); actions.className = 'project-actions';
+        var viewBtn = document.createElement('button'); viewBtn.className = 'btn primary'; viewBtn.textContent = 'Open';
+        viewBtn.addEventListener('click', function(){ alert('Open ' + project.name); });
+        actions.appendChild(viewBtn);
+        recent.appendChild(actions);
+
+        card.appendChild(recent);
+
+        return card;
+      }
+
+      function renderProjects(data){
+        var list = document.getElementById('projectList');
+        list.innerHTML = '';
+        if(!data || !Array.isArray(data.projects)){
+          list.textContent = 'No projects found.';
+          return;
+        }
+        data.projects.forEach(function(p, i){
+          var c = createCard(p, i);
+          list.appendChild(c);
+        });
+      }
+
+      fetch('project-data.json').then(function(resp){
+        if(!resp.ok) throw new Error('Failed to load project-data.json');
+        return resp.json();
+      }).then(function(json){
+        renderProjects(json);
+      }).catch(function(err){
+        var list = document.getElementById('projectList');
+        list.textContent = 'Error loading projects: ' + err.message;
+        console.error(err);
+      });
+    })();
+  </script>
+</body>
+</html>
